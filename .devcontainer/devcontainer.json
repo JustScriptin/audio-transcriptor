@@ -1,0 +1,15 @@
+{
+    "name": "Windows 11 FFmpeg Dev Env",
+    "build": {
+      "dockerfile": "Dockerfile",
+      "context": ".."
+    },
+    "runArgs": [
+      "--network",
+      "host"
+    ],
+    "settings": {
+      "terminal.integrated.shell.windows": "/bin/bash"
+    },
+    "remoteUser": "root",
+  }

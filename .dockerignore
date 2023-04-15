@@ -1,0 +1,4 @@
+.next
+.dockerignore
+Dockerfile
+docker-compose.yml

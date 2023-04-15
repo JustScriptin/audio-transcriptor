@@ -9,14 +9,39 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "fluent-ffmpeg": "^2.1.2",
+    "form-data": "^4.0.0",
+    "next": "13.3.0",
+    "node-fetch": "^3.3.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "dependencyDescriptions": {
+    "fluent-ffmpeg": "Wrapper around ffmpeg, for converting multimedia files.",
+    "form-data": "A module to create readable \"multipart/form-data\" streams. Can be used to submit forms and file uploads to other web applications.",
+    "next": "A React Framework",
+    "node-fetch": "A light-weight module that brings window.fetch to Node.js. Used to send form-data to the server.",
+    "react": "React is a JavaScript library for building user interfaces.",
+    "react-dom": "React package for working with the DOM."
+  },
+  "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.21",
     "@types/node": "18.15.11",
     "@types/react": "18.0.33",
     "@types/react-dom": "18.0.11",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
-    "next": "13.3.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
     "typescript": "5.0.4"
+  },
+  "devDependencyDescriptions": {
+    "@swc/cli": "A CLI for swc.",
+    "@swc/core": "A super-fast javascript and typescript compiler written in rust.",
+    "@types/fluent-ffmpeg": "Type definitions for fluent-ffmpeg.",
+    "@types/node": "Type definitions for Node.js.",
+    "@types/react": "Type definitions for React.",
+    "@types/react-dom": "Type definitions for React DOM.",
+    "eslint": "A fully pluggable tool for identifying and reporting on patterns in JavaScript.",
+    "eslint-config-next": "ESLint config for Next.js",
+    "typescript": "TypeScript is a language for application scale JavaScript development."
   }
 }
