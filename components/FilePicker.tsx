@@ -11,13 +11,13 @@ const FilePicker: React.FC<FilePickerProps> = ({ onFileSelect }) => {
 
   // When a file is selected, calls the onFileSelect function that will be passed as a prop
   const sendToUploadFile = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files && event.target.files[0];
+    const file = event?.target?.files?.[0];
     file && onFileSelect(file);
   };
 
   // Calls the input ref to open the file picker interface
   const openFilePickerInterface = () => {
-    fileInputRef.current && fileInputRef.current.click();
+    fileInputRef?.current?.click();
   };
 
   return (
