@@ -20,7 +20,6 @@ const convertToMp3 = async (inputFilePath: string): Promise<string> => {
     path.dirname(inputFilePath),
     `${fileName}.mp3`
   );
-  console.log("outputFilePath: ", outputFilePath);
 
   if (inputFileType === "mp3") return inputFilePath;
 

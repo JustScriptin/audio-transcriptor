@@ -22,12 +22,7 @@ import deleteFilesInDir from "@/lib/deleteFilesInDir";
  * // file: example.wav
  *
  * // Output (JSON response):
- * [
- * {
- *   "fileName": "example.txt",
- *   "transcription": "This is an example transcription of the audio file."
- * }
- * ]
+ * "[{\"fileName\": \"example.txt\", \"transcription\": \"This is an example transcription of the audio file.\"}]"
  * ```
  */
 export const POST = async (req: Request): Promise<Response> => {
