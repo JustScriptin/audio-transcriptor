@@ -34,8 +34,6 @@
     "typescript": "5.0.4"
   },
   "devDependencyDescriptions": {
-    "@swc/cli": "A CLI for swc.",
-    "@swc/core": "A super-fast javascript and typescript compiler written in rust.",
     "@types/fluent-ffmpeg": "Type definitions for fluent-ffmpeg.",
     "@types/node": "Type definitions for Node.js.",
     "@types/react": "Type definitions for React.",

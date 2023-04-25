@@ -26,6 +26,7 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 ### Steps
 
+0. Start Docker Desktop.
 1. Open the project folder in Visual Studio Code.
 2. Press `F1` to open the command palette and type "Remote-Containers: Reopen in Container" to open the project in the development container. Visual Studio Code will build the Docker image based on the Dockerfile and start the container.
 

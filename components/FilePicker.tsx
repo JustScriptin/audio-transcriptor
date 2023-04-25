@@ -2,35 +2,36 @@ import React, { useRef, ChangeEvent } from 'react';
 import styles from './FilePicker.module.css';
 
 interface FilePickerProps {
-  onFileSelect: (file:File) => void;
+  onFilesSelect: (files: File[]) => void;
 }
 
 // Main component
-const FilePicker: React.FC<FilePickerProps> = ({ onFileSelect }) => {
+const FilePicker: React.FC<FilePickerProps> = ({ onFilesSelect }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // When a file is selected, calls the onFileSelect function that will be passed as a prop
-  const sendToUploadFile = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event?.target?.files?.[0];
-    file && onFileSelect(file);
+  // When files are selected, calls the onFilesSelect function that will be passed as a prop
+  const sendToUploadFiles = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    files && onFilesSelect(Array.from(files));
   };
 
   // Calls the input ref to open the file picker interface
   const openFilePickerInterface = () => {
-    fileInputRef?.current?.click();
+    fileInputRef.current?.click();
   };
 
   return (
     <div className={styles.container}>
       <button className={styles.button} onClick={openFilePickerInterface}>
-        Select File
+        Select Files
       </button>
       <input
         ref={fileInputRef}
         type="file"
         accept="audio/mp3,video/mp4"
-        onChange={sendToUploadFile}
+        onChange={sendToUploadFiles}
         style={{ display: 'none' }}
+        multiple
       />
     </div>
   );

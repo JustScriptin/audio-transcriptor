@@ -6,15 +6,21 @@ const nextConfig = {
     // Add the plugin to both the server and client configurations
     config.plugins.push(
       new webpack.DefinePlugin({
-        'process.env.FLUENTFFMPEG_COV': false
+        'process.env.FLUENTFFMPEG_COV': false // patch for fluent-ffmpeg
       })
-    )
+    );
 
-    return config
+    // Enable polling-based file watching for hot reloading inside a Docker container
+    config.watchOptions = {
+      poll: 800,
+      aggregateTimeout: 300,
+    };
+
+    return config;
   },
   experimental: {
     appDir: true,
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

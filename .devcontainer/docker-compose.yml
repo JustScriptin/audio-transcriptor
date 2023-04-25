@@ -1,0 +1,17 @@
+services:
+  app:
+    image: docker-nextjs-dev
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+    # Files and Directories We Want Hot Reloaded
+      - ../app:/workspace/app
+      - ../public:/workspace/public
+      - ../components:/workspace/components
+      - ../lib:/workspace/lib
+    # Dev Experience - Persist VSCode Extensions and History (Windows)
+      - ~/.vscode/extensions:/root/.vscode-server/extensions
+    tty: true

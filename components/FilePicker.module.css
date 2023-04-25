@@ -11,6 +11,7 @@
   
   .button {
     display: inline-block;
+    background-color: red;
     background-color: #007bff;
     color: #ffffff;
     font-weight: 500;

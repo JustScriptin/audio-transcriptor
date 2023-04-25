@@ -1,15 +1,17 @@
 {
     "name": "Windows 11 FFmpeg Dev Env",
-    "build": {
-      "dockerfile": "Dockerfile",
-      "context": ".."
-    },
-    "runArgs": [
-      "--network",
-      "host"
-    ],
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    "postStartCommand": "npm run dev",
+    "shutdownAction": "stopCompose",
     "settings": {
-      "terminal.integrated.shell.windows": "/bin/bash"
-    },
-    "remoteUser": "root",
+      "terminal.integrated.defaultProfile.linux": "bash (container default)",
+      "terminal.integrated.profiles.linux": {
+        "bash (container default)": {
+          "path": "/usr/bin/bash",
+          "overrideName": true
+        }
+      }
+    }
   }
