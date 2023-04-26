@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "lint:fix:alt": "next lint -- --fix",
-    "format": "prettier --write --check \"app/**/*.{js,jsx,ts,tsx}\" \"components/**/*.{js,jsx,ts,tsx}\" \"lib/**/*.{js,jsx,ts,tsx}\""
+    "lint:fix:alt": "next lint -- --fix"
   },
   "dependencies": {
     "fluent-ffmpeg": "^2.1.2",
@@ -46,6 +45,7 @@
     "@typescript-eslint/eslint-plugin": "TypeScript parser for ESLint.",
     "eslint": "A fully pluggable tool for identifying and reporting on patterns in JavaScript.",
     "eslint-config-next": "ESLint config for Next.js",
+    "eslint-plugin-import": "This plugin intends to support linting of ES2015+ (ES6+) import/export syntax, and prevent issues with misspelling of file paths and import names. Used to sort imports alphabetically.",
     "typescript": "TypeScript is a language for application scale JavaScript development."
   }
 }
