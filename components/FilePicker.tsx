@@ -1,5 +1,6 @@
-import React, { useRef, ChangeEvent } from 'react';
-import styles from './FilePicker.module.css';
+import React, { ChangeEvent, useRef } from "react";
+
+import styles from "./FilePicker.module.css";
 
 interface FilePickerProps {
   onFilesSelect: (files: File[]) => void;
@@ -10,8 +11,8 @@ const FilePicker: React.FC<FilePickerProps> = ({ onFilesSelect }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // When files are selected, calls the onFilesSelect function that will be passed as a prop
-  const sendToUploadFiles = async (event: ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
+  const sendToUploadFiles = (event: ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.target;
     files && onFilesSelect(Array.from(files));
   };
 
@@ -30,7 +31,7 @@ const FilePicker: React.FC<FilePickerProps> = ({ onFilesSelect }) => {
         type="file"
         accept="audio/mp3,video/mp4"
         onChange={sendToUploadFiles}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
         multiple
       />
     </div>

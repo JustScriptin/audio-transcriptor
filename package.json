@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "lint:fix:alt": "next lint -- --fix",
+    "format": "prettier --write --check \"app/**/*.{js,jsx,ts,tsx}\" \"components/**/*.{js,jsx,ts,tsx}\" \"lib/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
     "fluent-ffmpeg": "^2.1.2",
@@ -29,8 +32,10 @@
     "@types/node": "18.15.11",
     "@types/react": "18.0.33",
     "@types/react-dom": "18.0.11",
-    "eslint": "8.38.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "eslint": "^8.39.0",
     "eslint-config-next": "13.3.0",
+    "eslint-plugin-import": "^2.27.5",
     "typescript": "5.0.4"
   },
   "devDependencyDescriptions": {
@@ -38,6 +43,7 @@
     "@types/node": "Type definitions for Node.js.",
     "@types/react": "Type definitions for React.",
     "@types/react-dom": "Type definitions for React DOM.",
+    "@typescript-eslint/eslint-plugin": "TypeScript parser for ESLint.",
     "eslint": "A fully pluggable tool for identifying and reporting on patterns in JavaScript.",
     "eslint-config-next": "ESLint config for Next.js",
     "typescript": "TypeScript is a language for application scale JavaScript development."

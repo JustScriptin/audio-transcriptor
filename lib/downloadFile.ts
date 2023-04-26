@@ -10,9 +10,7 @@
  */
 const downloadFile = (fileName: string, content: string) => {
   const downloadLink = document.createElement("a");
-  downloadLink.href = URL.createObjectURL(
-    new Blob([content], { type: "text/plain" })
-  );
+  downloadLink.href = URL.createObjectURL(new Blob([ content ], { type: "text/plain" }));
   downloadLink.download = fileName;
   downloadLink.style.display = "none";
 

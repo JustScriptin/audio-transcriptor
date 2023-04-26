@@ -1,5 +1,5 @@
-import path from "path";
 import ffmpeg from "fluent-ffmpeg";
+import path from "path";
 
 ffmpeg.setFfmpegPath("/usr/bin/ffmpeg");
 
@@ -14,26 +14,21 @@ ffmpeg.setFfmpegPath("/usr/bin/ffmpeg");
  * "input.mp3"
  * ```
  */
-const convertToMp3 = async (inputFilePath: string): Promise<string> => {
-  const [fileName, inputFileType] = path.basename(inputFilePath).split(".");
-  const outputFilePath = path.join(
-    path.dirname(inputFilePath),
-    `${fileName}.mp3`
-  );
+const convertToMp3 = (inputFilePath: string): Promise<string> => {
+  const [ fileName, inputFileType ] = path.basename(inputFilePath).split(".");
+  const outputFilePath = path.join(path.dirname(inputFilePath), `${fileName}.mp3`);
 
-  if (inputFileType === "mp3") return inputFilePath;
+  if (inputFileType === "mp3") return Promise.resolve(inputFilePath);
 
   return new Promise((resolve, reject) => {
     ffmpeg(inputFilePath)
       .inputFormat(inputFileType)
       .format("mp3")
       .audioCodec("libmp3lame")
-      .on("error", (err) => {
-        console.log(`An error occurred: ${err.message}`);
+      .on("error", err => {
         reject(err);
       })
       .on("end", () => {
-        console.log("Processing finished !");
         resolve(outputFilePath);
       })
       .save(outputFilePath);

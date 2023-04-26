@@ -1,10 +1,10 @@
-import fs from "fs";
-import path from "path";
-import FormData from "form-data";
-import fetch from "node-fetch";
-import convertToMp3 from "@/lib/convertToMp3";
 import chunkMp3File from "@/lib/chunkMp3File";
+import convertToMp3 from "@/lib/convertToMp3";
 import deleteFilesInDir from "@/lib/deleteFilesInDir";
+import FormData from "form-data";
+import fs from "fs";
+import fetch from "node-fetch";
+import path from "path";
 
 /**
  * Handles the transcription of an audio file sent as a multipart form data request.
@@ -15,7 +15,8 @@ import deleteFilesInDir from "@/lib/deleteFilesInDir";
  * @async
  * @function
  * @param {Request} req - The incoming request containing the audio file.
- * @returns {Promise<Response>} A promise that resolves to a JSON response containing the transcription results in an array.
+ * @returns {Promise<Response>} A promise that resolves to a JSON response containing the
+ * transcription results in an array.
  * @example
  * ```
  * // Input (form data with an audio file):
@@ -25,7 +26,7 @@ import deleteFilesInDir from "@/lib/deleteFilesInDir";
  * "[{\"fileName\": \"example.txt\", \"transcription\": \"This is an example transcription of the audio file.\"}]"
  * ```
  */
-export const POST = async (req: Request): Promise<Response> => {
+export const POST = async(req: Request): Promise<Response> => {
   // Retrieve form data and the file from the request
   const form = await req.formData();
   const files = form.getAll("file") as File[];
@@ -36,63 +37,61 @@ export const POST = async (req: Request): Promise<Response> => {
 
   const results: { fileName: string; transcription?: string }[] = [];
 
-  await Promise.all(
-    files.map(async (file: File) => {
-      const [fileName] = file.name.split(".");
-      const inputFilePath = path.join(baseDir, file.name);
+  await Promise.all(files.map(async(file: File) => {
+    const [ fileName ] = file.name.split(".");
+    const inputFilePath = path.join(baseDir, file.name);
 
-      // Write the file to disk
-      const buffer = Buffer.from(await file.arrayBuffer());
-      fs.writeFileSync(inputFilePath, buffer);
+    // Write the file to disk
+    const buffer = Buffer.from(await file.arrayBuffer());
+    fs.writeFileSync(inputFilePath, buffer);
 
-      // Convert the file to MP3 and split it into chunks
-      const mp3FilePath = await convertToMp3(inputFilePath);
-      const chunkedMp3Paths = await chunkMp3File(mp3FilePath);
+    // Convert the file to MP3 and split it into chunks
+    const mp3FilePath = await convertToMp3(inputFilePath);
+    const chunkedMp3Paths = await chunkMp3File(mp3FilePath);
 
-      const url = "https://api.openai.com/v1/audio/transcriptions";
-      const header = {
-        Accept: "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_APIKEY}`,
-      };
+    const url = "https://api.openai.com/v1/audio/transcriptions";
+    const header = {
+      Accept: "application/json",
+      Authorization: `Bearer ${process.env.OPENAI_APIKEY}`
+    };
 
-      // Map over chunked MP3 paths and create a promise for each file to be transcribed
-      const promises = chunkedMp3Paths.map(async (chunkedMp3Path) => {
-        const formData = new FormData();
-        formData.append("file", fs.createReadStream(chunkedMp3Path));
-        formData.append("model", "whisper-1");
-        formData.append("response_format", "text");
+    // Map over chunked MP3 paths and create a promise for each file to be transcribed
+    const promises = chunkedMp3Paths.map(async chunkedMp3Path => {
+      const formData = new FormData();
+      formData.append("file", fs.createReadStream(chunkedMp3Path));
+      formData.append("model", "whisper-1");
+      formData.append("response_format", "text");
 
-        try {
-          // Send a transcription request for each chunked MP3 file
-          const response = await fetch(url, {
-            method: "POST",
-            headers: { ...header, ...formData.getHeaders() },
-            body: formData,
-          });
+      try {
+        // Send a transcription request for each chunked MP3 file
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { ...header, ...formData.getHeaders() },
+          body: formData
+        });
 
-          if (!response.ok) throw new Error(response.statusText);
+        if (!response.ok) throw new Error(response.statusText);
 
-          const responseText = await response.text();
-          return { output: responseText };
-        } catch (error) {
-          return { error };
-        }
-      });
+        const responseText = await response.text();
+        return { output: responseText };
+      } catch (error){
+        return { error };
+      }
+    });
 
-      const result = await Promise.all(promises);
+    const result = await Promise.all(promises);
 
-      // Assembles all the transcribed chuncks back into a single output
-      const { output: transcription } = result.reduce<{ output?: string }>(
-        (acc, cur) => ({
-          output: acc.output ? acc.output + cur.output : cur.output,
-        }),
-        {}
-      );
+    // Assembles all the transcribed chuncks back into a single output
+    const { output: transcription } = result.reduce<{ output?: string }>(
+      (acc, cur) => ({
+        output: acc.output ? acc.output + cur.output : cur.output
+      }),
+      {}
+    );
 
-      // Pairs the file name with the transcription and pushes it to the results array
-      results.push({ fileName: `${fileName}.txt`, transcription });
-    })
-  );
+    // Pairs the file name with the transcription and pushes it to the results array
+    results.push({ fileName: `${fileName}.txt`, transcription });
+  }));
 
   // Delete all files in the uploads directory once the files aren't needed anymore.
   deleteFilesInDir(baseDir);
