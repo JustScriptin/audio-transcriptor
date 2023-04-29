@@ -1,5 +1,4 @@
-import chunkMp3File from "@/lib/chunkMp3File";
-import convertToMp3 from "@/lib/convertToMp3";
+import chunkTxtFile from "@/lib/chunkTxtFile";
 import deleteFilesInDir from "@/lib/deleteFilesInDir";
 import FormData from "form-data";
 import fs from "fs";
@@ -7,23 +6,23 @@ import fetch from "node-fetch";
 import path from "path";
 
 /**
- * Handles the transcription of an audio file sent as a multipart form data request.
- * The audio file is first converted to MP3 format and split into chunks.
- * Each chunk is then sent to the OpenAI API for transcription.
- * Finally, the transcriptions are concatenated and returned in a JSON response.
+ * Handles the summarization of a text file sent as a multipart form data request.
+ * The text file is first split into chunks according to the API's token requirements.
+ * Each chunk is then sent to the OpenAI API for summarization.
+ * Finally, the summaries are concatenated and returned in a JSON response.
  *
  * @async
  * @function
- * @param {Request} req - The incoming request containing the audio file.
+ * @param {Request} req - The incoming request containing the text file.
  * @returns {Promise<Response>} A promise that resolves to a JSON response containing the
- * transcription results in an array.
+ * summary results in an array.
  * @example
  * ```
- * // Input (form data with an audio file):
- * // file: example.wav
+ * // Input (form data with a text file):
+ * // file: example.txt
  *
  * // Output (JSON response):
- * "[{\"fileName\": \"example.txt\", \"transcription\": \"This is an example transcription of the audio file.\"}]"
+ * "[{\"fileName\": \"example.txt\", \"summary\": \"This is an example summary of the text file.\"}]"
  * ```
  */
 export const POST = async(req: Request): Promise<Response> => {
@@ -35,9 +34,8 @@ export const POST = async(req: Request): Promise<Response> => {
   // Create the base directory if it doesn't exist
   !fs.existsSync(baseDir) && fs.mkdirSync(baseDir, { recursive: true });
 
-  const results: { fileName: string; transcription?: string }[] = [];
+  const results: { fileName: string; summary?: string }[] = [];
 
-  // Map over each file and create a promise for each file to be transcribed. This is to manage multiple files.
   await Promise.all(files.map(async(file: File) => {
     const [ fileName ] = file.name.split(".");
     const inputFilePath = path.join(baseDir, file.name);
@@ -46,22 +44,26 @@ export const POST = async(req: Request): Promise<Response> => {
     const buffer = Buffer.from(await file.arrayBuffer());
     fs.writeFileSync(inputFilePath, buffer);
 
-    // Convert the file to MP3 and split it into chunks
-    const mp3FilePath = await convertToMp3(inputFilePath);
-    const chunkedMp3Paths = await chunkMp3File(mp3FilePath);
+    // Chunk the text file by tokens for the OpenAI API
+    const chunkedTxtPaths = await chunkTxtFile(inputFilePath);
 
-    const url = "https://api.openai.com/v1/audio/transcriptions";
+    const url = "https://api.openai.com/v1/chat/completions";
     const header = {
       Accept: "application/json",
       Authorization: `Bearer ${process.env.OPENAI_APIKEY}`
     };
 
     // Map over chunked MP3 paths and create a promise for each file to be transcribed
-    const promises = chunkedMp3Paths.map(async chunkedMp3Path => {
+    const promises = chunkedTxtPaths.map(async chunkedTxtPath => {
+      const fileContent = await fs.promises.readFile(chunkedTxtPath, "utf-8");
+
       const formData = new FormData();
-      formData.append("file", fs.createReadStream(chunkedMp3Path));
-      formData.append("model", "whisper-1");
-      formData.append("response_format", "text");
+      formData.append("model", "gpt-3.5-turbo");
+
+      // Serialize the messages object as a JSON string and include the file content as text.
+      formData.append("messages", JSON.stringify([
+        { role: "user", content: "Summarize the following video transcript ${fileContent}" }
+      ]));
 
       try {
         // Send a transcription request for each chunked MP3 file
@@ -74,6 +76,7 @@ export const POST = async(req: Request): Promise<Response> => {
         if (!response.ok) throw new Error(response.statusText);
 
         const responseText = await response.text();
+        console.log("Summarization Route Res: ", responseText);
         return { output: responseText };
       } catch (error){
         return { error };
@@ -83,7 +86,7 @@ export const POST = async(req: Request): Promise<Response> => {
     const result = await Promise.all(promises);
 
     // Assembles all the transcribed chuncks back into a single output
-    const { output: transcription } = result.reduce<{ output?: string }>(
+    const { output: summary } = result.reduce<{ output?: string }>(
       (acc, cur) => ({
         output: acc.output ? acc.output + cur.output : cur.output
       }),
@@ -91,7 +94,7 @@ export const POST = async(req: Request): Promise<Response> => {
     );
 
     // Pairs the file name with the transcription and pushes it to the results array
-    results.push({ fileName: `${fileName}.txt`, transcription });
+    results.push({ fileName: `${fileName}.txt`, summary });
   }));
 
   // Delete all files in the uploads directory once the files aren't needed anymore.
