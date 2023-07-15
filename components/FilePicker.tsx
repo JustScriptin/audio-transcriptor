@@ -1,19 +1,16 @@
 import React, { ChangeEvent, useRef } from "react";
 
-import styles from "./FilePicker.module.css";
-
-interface FilePickerProps {
-  onFilesSelect: (files: File[]) => void;
-}
+import styles from "./FilePicker.module.scss";
+import sendToServer from "@/lib/sendToServer";
 
 // Main component
-const FilePicker: React.FC<FilePickerProps> = ({ onFilesSelect }) => {
+const FilePicker: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // When files are selected, calls the onFilesSelect function that will be passed as a prop
   const sendToUploadFiles = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target;
-    files && onFilesSelect(Array.from(files));
+    files && sendToServer(Array.from(files));
   };
 
   // Calls the input ref to open the file picker interface

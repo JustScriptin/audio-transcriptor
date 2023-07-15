@@ -1,0 +1,1769 @@
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/.devcontainer/devcontainer.json:
+
+  {
+    "name": "Windows 11 FFmpeg Dev Env",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    "postStartCommand": "npm run dev",
+    "shutdownAction": "stopCompose",
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "terminal.integrated.defaultProfile.linux": "bash (container default)",
+          "terminal.integrated.profiles.linux": {
+            "bash (container default)": {
+              "path": "/usr/bin/bash",
+              "overrideName": true
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+/c/Users/wesle/repos/audio-transcriptor/.devcontainer/docker-compose.yml:
+
+services:
+  app:
+    image: docker-nextjs-dev
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+    # Files and Directories We Want Hot Reloaded
+      - ../app:/workspace/app
+      - ../public:/workspace/public
+      - ../components:/workspace/components
+      - ../lib:/workspace/lib
+      #- ../.next:/workspace/.next
+      #- /workspace/node_modules
+
+    # Dev Experience - Persist VSCode Extensions and History (Windows)
+      - ~/.vscode/extensions:/root/.vscode-server/extensions
+    tty: true
+
+
+/c/Users/wesle/repos/audio-transcriptor/.devcontainer/Dockerfile:
+
+FROM node:18
+
+# Set the working directory inside /app directory
+WORKDIR /workspace
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the items that do not need to be regularly rebuilt. Those will be mounted as volumes
+COPY next.config.js next.config.js
+COPY tsconfig.json tsconfig.json
+COPY .env .env
+COPY env.example env.example
+COPY .dockerignore .dockerignore
+COPY .eslintrc.json .eslintrc.json
+COPY .gitignore .gitignore
+COPY .vscode .vscode
+COPY .next .next
+COPY .devcontainer .devcontainer
+COPY next-env.d.ts next-env.d.ts
+COPY README.md README.md
+COPY .git .git
+COPY docker-reset.sh docker-reset.sh
+COPY ./constants ./constants
+
+# Update the package index and install FFmpeg
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
+
+
+/c/Users/wesle/repos/audio-transcriptor/.eslintrc.json:
+
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["@typescript-eslint", "import"],
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "eslint:recommended"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "^_" }],
+    "no-unused-vars": "off",
+    "import/order": [
+      "error",
+      {
+        "pathGroups": [
+          {
+            "pattern": "**",
+            "group": "external",
+            "position": "before"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": [],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+    "no-duplicate-imports": "error",
+    "array-callback-return": "error",
+    "no-template-curly-in-string": "warn",
+    "no-unmodified-loop-condition": "error",
+    "no-unreachable-loop": "error",
+    "no-use-before-define": "warn",
+    "require-atomic-updates": "error",
+    "capitalized-comments": [
+      "error",
+      "always",
+      {
+              "ignoreInlineComments": true,
+              "ignoreConsecutiveComments": true,
+              "ignorePattern": "import|export|const|let|type|interface|return|async|if|else|for"
+          
+      }
+  ],
+    "default-case": "error",
+    "default-case-last": "error",
+    "default-param-last": "error",
+    "dot-notation": "error",
+    "eqeqeq": "error",
+    "id-length": ["error", {
+      "min": 3,
+      "max": 40,
+      "exceptions": ["fs", "_"]
+    }],
+      "max-depth": ["error", 4],
+      "max-nested-callbacks": ["error", 4],
+      "max-params": ["error", 4],
+      "multiline-comment-style": ["error", "bare-block"],
+      "new-cap": "error",
+      "no-bitwise": "error",
+      "no-confusing-arrow": "error",
+      "no-console": "warn",
+      "no-empty-function": "error",
+      "no-eq-null": "error",
+      "no-eval": "error",
+      "no-extra-bind": "error",
+      "no-extra-label": "error",
+      "no-floating-decimal": "error",
+      "no-implicit-coercion": "error",
+      "no-implied-eval": "error",
+      "no-invalid-this": "error",
+      "no-iterator": "error",
+      "no-lone-blocks": "error",
+      "no-labels": "error",
+      "no-lonely-if": "error",
+      "no-mixed-operators": "error",
+      "no-multi-str": "error",
+      "no-nested-ternary": "error",
+      "no-new": "error",
+      "no-new-func": "error",
+      "no-new-object": "error",
+      "no-new-wrappers": "error",
+      "no-octal-escape": "error",
+      "no-param-reassign": "error",
+      "no-proto": "error",
+      "no-return-assign": "error",
+      "no-script-url": "error",
+      "no-sequences": "error",
+      "no-shadow": "error",
+      "no-throw-literal": "error",
+      "no-undef": "off",
+      "no-unneeded-ternary": "error",
+      "no-useless-call": "error",
+      "no-useless-computed-key": "error",
+      "no-useless-concat": "error",
+      "no-useless-constructor": "error",
+      "no-useless-rename": "error",
+      "no-useless-return": "error",
+      "no-var": "error",
+      "no-void": "error",
+      "no-warning-comments": "error",
+      "object-shorthand": "error",
+      "operator-assignment": ["error", "always"],
+      "prefer-arrow-callback": "error",
+      "prefer-const": "error",
+      "prefer-destructuring": "error",
+      "prefer-exponentiation-operator": "error",
+      "prefer-object-has-own": "error",
+      "prefer-object-spread": "error",
+      "prefer-regex-literals": "error",
+      "prefer-template": "error",
+      "quote-props": ["error", "as-needed"],
+      "require-await": "error",
+      "spaced-comment": "error",
+      "yoda": "error",
+      "array-bracket-spacing": ["error", "always"],
+      "array-element-newline": ["error", "consistent"],
+      "arrow-parens": ["error", "as-needed"],
+      "arrow-spacing": "error",
+      "block-spacing": "error",
+      "brace-style": "error",
+      "comma-dangle": "error",
+      "comma-spacing": "error",
+      "comma-style": "error",
+      "computed-property-spacing": "error",
+      "dot-location": ["error", "property"],
+      "func-call-spacing": "error",
+      "function-call-argument-newline": ["error", "consistent"],
+      "function-paren-newline": ["error", "multiline"],
+      "implicit-arrow-linebreak": "error",
+      "indent": ["error", 2],
+      "jsx-quotes": "error",
+      "key-spacing": "error",
+      "keyword-spacing": "error",
+      "linebreak-style": "error",
+      "lines-around-comment": ["error", {
+        "beforeBlockComment": true,
+        "beforeLineComment": true,
+        "allowBlockStart": true,
+        "allowObjectStart": true,
+        "allowArrayStart": true,
+        "allowClassStart": true
+      }],
+      "lines-between-class-members": "error",
+      "max-len": ["error", {
+        "code": 120,
+        "ignoreComments": false,
+        "ignoreStrings": false,
+        "ignoreTemplateLiterals": false,
+        "ignoreRegExpLiterals": true,
+        "ignoreUrls": true
+      }],
+      "new-parens": "error",
+      "newline-per-chained-call": "error",
+      "no-extra-parens": "error",
+      "no-multi-spaces": "error",
+      "no-multiple-empty-lines": "error",
+      "no-trailing-spaces": "error",
+      "no-whitespace-before-property": "error",
+      "object-curly-spacing": ["error", "always"],
+      "padded-blocks": ["error", "never"],
+      "quotes": "error",
+      "rest-spread-spacing": "error",
+      "semi": "error",
+      "semi-spacing": "error",
+      "semi-style": "error",
+      "space-before-blocks": ["error", "never"],
+      "space-before-function-paren": ["error", "never"],
+      "space-in-parens": ["error", "never"],
+      "space-infix-ops": ["error", { "int32Hint": false }],
+      "space-unary-ops": [
+        2, {
+          "words": true,
+          "nonwords": false
+    }],
+      "switch-colon-spacing": "error",
+      "template-curly-spacing": "error",
+      "template-tag-spacing": ["error", "always"],
+      "wrap-iife": ["error", "inside"],
+      "wrap-regex": "error",
+      "@typescript-eslint/array-type": "error",
+      "@typescript-eslint/consistent-generic-constructors": ["error", "type-annotation"],
+      "@typescript-eslint/consistent-indexed-object-style": "error" 
+  }
+}
+
+
+/c/Users/wesle/repos/audio-transcriptor/.vscode/settings.json:
+
+{
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "files.eol": "\r\n",
+}
+
+
+/c/Users/wesle/repos/audio-transcriptor/app/api/summarize/route.ts:
+
+import { USER_PROMPTS, SYSTEM_PROMPTS, PROMPT_PRIMERS } from "@/constants";
+import assembleSummary from "@/lib/assembleSummary";
+import callGptSummarizerApi from "@/lib/callGptSummarizerApi";
+import chunkedSummaryDataReducer from "@/lib/chunkedSummaryDataReducer";
+import chunkTxtFile from "@/lib/chunkTxtFile";
+
+import deleteFilesInDir from "@/lib/deleteFilesInDir";
+import extractSummaryData from "@/lib/extractSummaryData";
+
+import fs from "fs";
+import path from "path";
+
+/**
+ * Handles the summarization of a text file sent as a multipart form data request.
+ * The text file is first split into chunks according to the API's token requirements.
+ * Each chunk is then sent to the OpenAI API for summarization.
+ * Finally, the summaries are concatenated and returned in a JSON response.
+ *
+ * @async
+ * @function
+ * @param {Request} req - The incoming request containing the text file.
+ * @returns {Promise<Response>} A promise that resolves to a JSON response containing the
+ * summary results in an array.
+ * @example
+ * ```
+ * // Input (form data with a text file):
+ * // file: example.txt
+ *
+ * // Output (JSON response):
+ * "[{\"fileName\": \"example.txt\", \"summary\": \"This is an example summary of the text file.\"}]"
+ * ```
+ */
+export const POST = async(req: Request): Promise<Response> => {
+  // Retrieve form data and the file from the request
+  const form = await req.formData();
+  const files = form.getAll("file") as File[];
+  const baseDir = path.join(process.cwd(), "public", "uploads");
+
+  // Create the base directory if it doesn't exist
+  !fs.existsSync(baseDir) && fs.mkdirSync(baseDir, { recursive: true });
+
+
+  const [ summaryChunkedTxtPaths ] = await Promise.all(files.map(async file => {
+    const inputFilePath = path.join(baseDir, file.name); // Create the path to the file
+
+    // Write the file to disk. fs needs it as a buffer, so we convert it.
+    const buffer = Buffer.from(await file.arrayBuffer());
+    fs.writeFileSync(inputFilePath, buffer);
+
+    // Chunk the text file by tokens for the OpenAI API, The prompts are passed in to account for the tokens they occupy
+    return await chunkTxtFile(
+      inputFilePath,
+      [
+        USER_PROMPTS.summarize,
+        SYSTEM_PROMPTS.summarize,
+        PROMPT_PRIMERS.summarize
+      ]
+    );
+  }));
+
+  // Send each chunk to the OpenAI API for summarization, returning an array of summaries for every chunk
+  const summaries = await Promise.all(summaryChunkedTxtPaths.map(async chunkedTxtPath => {
+    const userInput = fs.readFileSync(chunkedTxtPath, "utf-8");
+
+    return await callGptSummarizerApi(userInput, PROMPT_PRIMERS.summarize);
+  }));
+
+  // Extract the summary data into an object
+  const summaryData = await extractSummaryData(summaries);
+
+  // Summarize the summaries into a single summary
+  const summarizedSummaryData = await chunkedSummaryDataReducer(summaryData) as ReturnType<typeof extractSummaryData>;
+
+  // Put the summary data together into a string
+  const summary = assembleSummary(summarizedSummaryData);
+
+  // Delete the files transiently stored on disk. We don't need them anymore.
+  deleteFilesInDir(baseDir);
+  return new Response(JSON.stringify(summary), { status: 200 });
+};
+
+
+/c/Users/wesle/repos/audio-transcriptor/app/api/transcribe/route.ts:
+
+import chunkMp3File from "@/lib/chunkMp3File";
+import convertToMp3 from "@/lib/convertToMp3";
+import deleteFilesInDir from "@/lib/deleteFilesInDir";
+import FormData from "form-data";
+import fs from "fs";
+import fetch from "node-fetch";
+import path from "path";
+
+/**
+ * Handles the transcription of an audio file sent as a multipart form data request.
+ * The audio file is first converted to MP3 format and split into chunks.
+ * Each chunk is then sent to the OpenAI API for transcription.
+ * Finally, the transcriptions are concatenated and returned in a JSON response.
+ *
+ * @async
+ * @function
+ * @param {Request} req - The incoming request containing the audio file.
+ * @returns {Promise<Response>} A promise that resolves to a JSON response containing the
+ * transcription results in an array.
+ * @example
+ * ```
+ * // Input (form data with an audio file):
+ * // file: example.wav
+ *
+ * // Output (JSON response):
+ * "[{\"fileName\": \"example.txt\", \"transcription\": \"This is an example transcription of the audio file.\"}]"
+ * ```
+ */
+export const POST = async(req: Request): Promise<Response> => {
+  // Retrieve form data and the file from the request
+  const form = await req.formData();
+  const files = form.getAll("file") as File[];
+  const baseDir = path.join(process.cwd(), "public", "uploads");
+
+  // Create the base directory if it doesn't exist
+  !fs.existsSync(baseDir) && fs.mkdirSync(baseDir, { recursive: true });
+
+  const results: { fileName: string; transcription?: string }[] = [];
+
+  // Map over each file and create a promise for each file to be transcribed. This is to manage multiple files.
+  await Promise.all(files.map(async(file: File) => {
+    const [ fileName ] = file.name.split(".");
+    const inputFilePath = path.join(baseDir, file.name);
+
+    // Write the file to disk. fs needs it as a buffer, so we convert it.
+    const buffer = Buffer.from(await file.arrayBuffer());
+    fs.writeFileSync(inputFilePath, buffer);
+
+    // Convert the file to MP3 and split it into chunks
+    const mp3FilePath = await convertToMp3(inputFilePath);
+    const chunkedMp3Paths = await chunkMp3File(mp3FilePath);
+
+    const url = "https://api.openai.com/v1/audio/transcriptions";
+    const header = {
+      Accept: "application/json",
+      Authorization: `Bearer ${process.env.OPENAI_APIKEY}`
+    };
+
+    // Map over chunked MP3 paths and create a promise for each file to be transcribed
+    const promises = chunkedMp3Paths.map(async chunkedMp3Path => {
+      const formData = new FormData();
+      formData.append("file", fs.createReadStream(chunkedMp3Path));
+      formData.append("model", "whisper-1");
+      formData.append("response_format", "text");
+
+      try {
+        // Send a transcription request for each chunked MP3 file
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { ...header, ...formData.getHeaders() },
+          body: formData
+        });
+
+        if (!response.ok) throw new Error(response.statusText);
+
+        const responseText = await response.text();
+        return { output: responseText };
+      } catch (error){
+        return { error };
+      }
+    });
+
+    const result = await Promise.all(promises);
+
+    // Assembles all the transcribed chuncks back into a single output
+    const { output: transcription } = result.reduce<{ output?: string }>(
+      (acc, cur) => ({
+        output: acc.output ? acc.output + cur.output : cur.output
+      }),
+      {}
+    );
+
+    // Pairs the file name with the transcription and pushes it to the results array
+    results.push({ fileName: `${fileName}.txt`, transcription });
+  }));
+
+  // Delete all files in the uploads directory once the files aren't needed anymore.
+  deleteFilesInDir(baseDir);
+  return new Response(JSON.stringify(results), { status: 200 });
+};
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/app/globals.css:
+
+:root {
+  --max-width: 1100px;
+  --border-radius: 12px;
+  --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
+    'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
+    'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+
+  --primary-glow: conic-gradient(
+    from 180deg at 50% 50%,
+    #16abff33 0deg,
+    #0885ff33 55deg,
+    #54d6ff33 120deg,
+    #0071ff33 160deg,
+    transparent 360deg
+  );
+  --secondary-glow: radial-gradient(
+    rgba(255, 255, 255, 1),
+    rgba(255, 255, 255, 0)
+  );
+
+  --tile-start-rgb: 239, 245, 249;
+  --tile-end-rgb: 228, 232, 233;
+  --tile-border: conic-gradient(
+    #00000080,
+    #00000040,
+    #00000030,
+    #00000020,
+    #00000010,
+    #00000010,
+    #00000080
+  );
+
+  --callout-rgb: 238, 240, 241;
+  --callout-border-rgb: 172, 175, 176;
+  --card-rgb: 180, 185, 188;
+  --card-border-rgb: 131, 134, 135;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+
+    --primary-glow: radial-gradient(rgba(1, 65, 255, 0.4), rgba(1, 65, 255, 0));
+    --secondary-glow: linear-gradient(
+      to bottom right,
+      rgba(1, 65, 255, 0),
+      rgba(1, 65, 255, 0),
+      rgba(1, 65, 255, 0.3)
+    );
+
+    --tile-start-rgb: 2, 13, 46;
+    --tile-end-rgb: 2, 5, 19;
+    --tile-border: conic-gradient(
+      #ffffff80,
+      #ffffff40,
+      #ffffff30,
+      #ffffff20,
+      #ffffff10,
+      #ffffff10,
+      #ffffff80
+    );
+
+    --callout-rgb: 20, 20, 20;
+    --callout-border-rgb: 108, 108, 108;
+    --card-rgb: 100, 100, 100;
+    --card-border-rgb: 200, 200, 200;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/app/layout.tsx:
+
+import "./globals.css";
+
+export const metadata = {
+  title: "Create Next App",
+  description: "Generated by create next app"
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }){
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/app/page.module.css:
+
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/app/page.tsx:
+
+"use client";
+
+import FilePicker from "@/components/FilePicker";
+import callSummarizerApi from "@/lib/callSummarizerApi";
+import callTranscriptorApi from "@/lib/callTranscriptorApi";
+import downloadFile from "@/lib/downloadFile";
+import { NextPage } from "next";
+import { useCallback } from "react";
+
+type OnFileSelect = (files: File[]) => Promise<void>;
+
+const Home: NextPage = () => {
+  const sendToServer: OnFileSelect = useCallback(async files => {
+    const transcriptResponse = await callTranscriptorApi(files);
+
+    // Download each file
+    await Promise.all(transcriptResponse.map(async({ fileName, transcription }) => {
+      const summary = await callSummarizerApi(transcription);
+      downloadFile(fileName, summary);
+    }));
+  }, []);
+
+  return (
+    <>
+      <FilePicker onFilesSelect={sendToServer} />
+    </>
+  );
+};
+
+export default Home;
+
+
+/c/Users/wesle/repos/audio-transcriptor/combined_20230712_210449.txt:
+
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/components/FilePicker.module.css:
+
+/* FilePicker.module.css */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .button {
+    display: inline-block;
+    background-color: red;
+    background-color: #007bff;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 1rem;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .button:hover {
+    background-color: #0056b3;
+    border-color: #004095;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .button:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+  }
+  
+  .button:active {
+    background-color: #0056b3;
+    border-color: #004095;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  }
+  
+
+
+/c/Users/wesle/repos/audio-transcriptor/components/FilePicker.tsx:
+
+import React, { ChangeEvent, useRef } from "react";
+
+import styles from "./FilePicker.module.css";
+
+interface FilePickerProps {
+  onFilesSelect: (files: File[]) => void;
+}
+
+// Main component
+const FilePicker: React.FC<FilePickerProps> = ({ onFilesSelect }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // When files are selected, calls the onFilesSelect function that will be passed as a prop
+  const sendToUploadFiles = (event: ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.target;
+    files && onFilesSelect(Array.from(files));
+  };
+
+  // Calls the input ref to open the file picker interface
+  const openFilePickerInterface = () => {
+    fileInputRef.current?.click();
+  };
+
+  return (
+    <div className={styles.container}>
+      <button className={styles.button} onClick={openFilePickerInterface}>
+        Select Files
+      </button>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="audio/mp3,video/mp4"
+        onChange={sendToUploadFiles}
+        style={{ display: "none" }}
+        multiple
+      />
+    </div>
+  );
+};
+
+export default FilePicker;
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/constants/index.ts:
+
+/* eslint-disable max-len */
+
+// OpenAI GPT Prompts
+export const USER_PROMPTS = {
+  summarize: `You are a text analysis specialist. You provide information in the form of the following template:
+
+
+
+    # Text Analysis Template
+    
+    ## 1. AUDIENCE ANALYSIS
+    - **Intended Audience:** Define who the text is primarily intended for. Identify the specific audience sectors who would find value or relevance in this text and explain why.
+    
+    ## 2. CONTENT ANALYSIS
+    - **Main Topics:** What are the main topics discussed?
+    - **Critical Components:** Identify and list the most critical points, compelling examples, and impactful quotations from the text. Summarize these key takeaways.
+    
+    ## 3. TEXT DECONSTRUCTION
+    - **Procedure Breakdown:** If the text details a process or set of instructions, provide a concise, step-by-step summary on how to conduct each step. Ensure the instructions are clear and accessible.
+    
+    ## 4. CONCLUSION
+    - **Summary:** Create a concise and thorough summary based on the text. Ensure that all crucial information and practical details are included while eliminating any extraneous or unnecessary content.
+    
+    ## 5. INFERRED INNOVATION
+    - **Deep Analysis:** Avoid restating, summarizing, or directly referencing the text and its subject matter. Instead, draw from the subtext and hidden themes to cultivate entirely new and unique ideas or insights. These should diverge from the explicit text content, stemming from a profound understanding of underlying concepts. The result should be an inventive output offering an unexpected viewpoint not directly apparent from the text.`
+};
+
+export const SYSTEM_PROMPTS = {
+  summarize: "You are a text analysis specialist."
+};
+
+export const PROMPT_PRIMERS = {
+  summarize: "Summarize following text. Following all the rules in the template:",
+  concatenate: "While maintaining the format and general structure, summarize the following pieces of text into one unified and concise text ensuring that all crucial information and practical details are included while eliminating any extraneous or unnecessary content:"
+} as const;
+
+// OpenAI GPT Models
+const MODELS = {
+  GPT35_4K: {
+    name: "gpt-3.5-turbo",
+    tokenLimit: 400
+  },
+  GPT35_16K: {
+    name: "gpt-3.5-turbo-16k",
+    tokenLimit: 16384
+  }
+} as const;
+
+// Get the model name from the environment variables, this is done to assign the models token limit dynamically
+export const MODEL = MODELS[process.env.SUMMARIZE_API_MODEL as keyof typeof MODELS];
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/assembleSummary.ts:
+
+import type extractSummaryData from "./extractSummaryData";
+
+type SummaryData = ReturnType<typeof extractSummaryData>;
+
+/**
+ * Gets an object with structured data and assembles it into a summary.
+ *
+ * @param {object} summaryData - An object containing the extracted summary data.
+ * @returns {string} The assembled summary.
+ */
+const assembleSummary = (summaryData: SummaryData) => {
+  const {
+    audienceAnalysis,
+    contentAnalysis,
+    textDeconstruction,
+    conclusion,
+    inferredInnovation
+  } = summaryData;
+
+  const template = `
+    # Text Analysis Template
+    
+    ## 1. AUDIENCE ANALYSIS
+    - **Intended Audience:** ${audienceAnalysis.intendedAudience}
+
+    ## 2. CONTENT ANALYSIS
+    - **Main Topics:** ${contentAnalysis.mainTopics}
+    - **Critical Components:** ${contentAnalysis.criticalComponents}
+    
+    ## 3. TEXT DECONSTRUCTION
+    - **Procedure Breakdown:** ${textDeconstruction.procedureBreakdown}
+    
+    ## 4. CONCLUSION
+    - **Summary:** ${conclusion.summary}
+    
+    ## 5. INFERRED INNOVATION
+    - **Deep Analysis:** ${inferredInnovation.deepAnalysis}
+  `;
+
+  return template.trim();
+};
+
+export default assembleSummary;
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/callGptConcatinatorApi.ts:
+
+import { SYSTEM_PROMPTS, PROMPT_PRIMERS, MODEL } from "@/constants";
+type PromptPrimerValues = typeof PROMPT_PRIMERS[keyof typeof PROMPT_PRIMERS];
+
+
+/**
+ * This function interacts with OpenAI's GPT API to create a summary of a provided text.
+ * It first sets up the necessary information for the API call, including the URL, headers,
+ * and the sequence of messages for the conversation model to process.
+ * It then makes a POST request to the API and parses the response to get the summarized text.
+ *
+ * @async
+ * @function callGptSummarizerApi
+ * @param {string} userInput - The text that the user wants to summarize. This could be a
+ * paragraph, an article, or any other form of text.
+ * @param {PromptPrimerValues} summaryPrimer - The summary primer value to guide the AI model
+ * in generating the summary. It is part of the message sequence that will be processed by the model.
+ * @returns {Promise<string>} - A promise that resolves with a string containing the summarized text.
+ * The promise could reject if there is an error with the API call, so be sure to handle potential rejections.
+ * @throws Will throw an error if the API call fails
+ * @example
+ * async function getSummary() {
+ *   try {
+ *     const summary = await callGptSummarizerApi("Once upon a time...", PROMPT_PRIMERS.summarize);
+ *     console.log(summary); // logs the summarized text
+ *   } catch (error) {
+ *     console.error(error); // logs any error that occurred during the API call
+ *   }
+ * }
+ * getSummary();
+ */
+const callGptConcatinatorApi = async(userInput: string, summaryPrimer: PromptPrimerValues): Promise<string> => {
+  const url = "https://api.openai.com/v1/chat/completions";
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${process.env.OPENAI_APIKEY}`
+  };
+
+  const messages = [
+    {
+      role: "system",
+      content: SYSTEM_PROMPTS.summarize
+    },
+    {
+      role: "user",
+      content: `${summaryPrimer}} ${userInput}`
+    }
+  ];
+
+  const payload = JSON.stringify({
+    model: MODEL.name,
+    messages
+  });
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers,
+    body: payload
+  });
+  const data = await response.json() as Record<any, any>;
+  const summary: string = data.choices[0].message.content;
+  return summary;
+};
+
+export default callGptConcatinatorApi;
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/callGptSummarizerApi.ts:
+
+import { USER_PROMPTS, SYSTEM_PROMPTS, PROMPT_PRIMERS, MODEL } from "@/constants";
+import fetch from "node-fetch";
+
+type PromptPrimerValues = typeof PROMPT_PRIMERS[keyof typeof PROMPT_PRIMERS];
+
+/**
+ * This function interacts with OpenAI's GPT API to create a summary of a provided text.
+ * It first sets up the necessary information for the API call, including the URL, headers,
+ * and the sequence of messages for the conversation model to process.
+ * It then makes a POST request to the API and parses the response to get the summarized text.
+ *
+ * @async
+ * @function callGptSummarizerApi
+ * @param {string} userInput - The text that the user wants to summarize. This could be a
+ * paragraph, an article, or any other form of text.
+ * @param {PromptPrimerValues} summaryPrimer - The summary primer value to guide the AI model
+ * in generating the summary. It is part of the message sequence that will be processed by the model.
+ * The promise could reject if there is an error with the API call, so be sure to handle potential rejections.
+ * @throws Will throw an error if the API call fails
+ * @example
+ * async function getSummary() {
+ *   try {
+ *     const summary = await callGptSummarizerApi("Once upon a time...", PROMPT_PRIMERS.summarize);
+ *     console.log(summary); // logs the summarized text
+ *   } catch (error) {
+ *     console.error(error); // logs any error that occurred during the API call
+ *   }
+ * }
+ * getSummary();
+ */
+const callGptSummarizerApi = async(userInput: string, summaryPrimer: PromptPrimerValues): Promise<string> => {
+  const url = "https://api.openai.com/v1/chat/completions";
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${process.env.OPENAI_APIKEY}`
+  };
+
+  const messages = [
+    {
+      role: "system",
+      content: SYSTEM_PROMPTS.summarize
+    },
+    {
+      role: "user",
+      content: USER_PROMPTS.summarize
+    },
+    {
+      role: "user",
+      content: `${summaryPrimer}} ${userInput}`
+    }
+  ];
+
+  const payload = JSON.stringify({
+    model: MODEL.name,
+    messages
+  });
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers,
+    body: payload
+  });
+  const data = await response.json() as Record<any, any>;
+  const summary: string = data.choices[0].message.content;
+  return summary;
+};
+
+export default callGptSummarizerApi;
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/callSummarizerApi.ts:
+
+/**
+ * Sends a text file to a local server endpoint for summarization.
+ * The server summarizes the text and returns it in markdown format.
+ *
+ * @async
+ * @function sendFileToTranscribe
+ * @param {string} transcript - The text to be summarized.
+ * @returns {Promise<string>} A promise that resolves to the summarized text in markdown format.
+ * @throws {Error} If the fetch request fails.
+ *
+ * @example
+ * async function example() {
+ *   try {
+ *     const markdown = await sendFileToTranscribe("Hello, world!");
+ *     console.log(markdown);
+ *   } catch (error) {
+ *     console.error(error);
+ *   }
+ * }
+ * example();
+ */
+const sendFileToTranscribe = async(transcript:string):Promise<string> => {
+  const textFile = new Blob([ transcript ], { type: "text/plain" });
+  const url = "http://localhost:3000/api/summarize";
+  const headers = { Accept: "application/json" };
+
+  const formData = new FormData();
+  formData.append("file", textFile, "filename.txt");
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers,
+    body: formData
+  });
+
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+  const data = await response.json();
+  return data;
+};
+
+export default sendFileToTranscribe;
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/callTranscriptorApi.ts:
+
+type TranscriptionType = {
+    fileName: string;
+    transcription: string;
+  };
+
+const callTranscriptorApi = async(files: File[]): Promise<TranscriptionType[]> => {
+  const formData = new FormData();
+  files.forEach(file => {
+    formData.append("file", file);
+  });
+
+  const url = "http://localhost:3000/api/transcribe";
+  const headers = { Accept: "application/json" };
+
+  const response = await fetch(url, { method: "POST", headers, body: formData });
+
+  if (!response.ok) throw new Error("Failed to fetch data from the server.");
+
+  return await response.json();
+};
+
+export default callTranscriptorApi;
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/chunkedSummaryDataReducer.ts:
+
+import { PROMPT_PRIMERS } from "@/constants";
+import callGptConcatinatorApi from "./callGptConcatinatorApi";
+
+ type ProcessedData = Record<string, any>;
+
+/**
+ * An asynchronous function that abstracts and summarises the input data.
+ * The function is recursive in nature, processing nested objects within the data.
+ * It passes values through the GPT summarizer API and returns a processed data object
+ * with the same structure as the input.
+ *
+ * @async
+ * @function abstractChuckedSummariesData
+ * @param {ProcessedData} data - The data to be summarised.
+ * @returns {Promise<ProcessedData>} - A promise that resolves with the summarised data.
+ *
+ * @example
+ *
+ * abstractChuckedSummariesData(data).then(summarisedData => {
+ *    console.log(summarisedData);
+ * });
+ */
+const chunkedSummaryDataReducer = async<T>(data: ProcessedData): Promise<T> => {
+  /**
+   * An inner asynchronous function that processes a key-value pair.
+   * If the value is an object, it will recursively process its entries.
+   * If the value is not an object, it will pass it through the GPT summarizer API.
+   * In case of an error with the API call, the function will log the error and return null for the key.
+   *
+   * @async
+   * @function processValue
+   * @param {string} key - The key of the data entry to process.
+   * @param {any} value - The value of the data entry to process.
+   * @returns {Promise<[string, any]>} - A promise that resolves with a tuple of the key and processed value.
+   *
+   * @example
+   *
+   * processValue('myKey', 'myValue').then(([key, value]) => {
+   *    console.log(key, value);
+   * });
+   */
+  const processValue = async(key: string, value: any): Promise<[string, any]> => {
+    if (typeof value === "object" && value !== null){
+      const entries = Object.entries(value);
+      const results = await Promise.all(entries.map(async([ nestedKey, nestedValue ]) => {
+        return await processValue(nestedKey, nestedValue);
+      }));
+
+      return [ key, Object.fromEntries(results) ];
+    }
+
+    try {
+      const responseData = await callGptConcatinatorApi(value, PROMPT_PRIMERS.concatenate);
+      return [ key, responseData ];
+    } catch (error){
+      console.error(`Error sending data for key "${key}":`, error);
+      return [ key, null ];
+    }
+  };
+
+  const processedData = Object.fromEntries(await Promise.all(Object.entries(data).map(async([ key, value ]) => {
+    return await processValue(key, value);
+  })));
+
+  return processedData as T;
+};
+
+export default chunkedSummaryDataReducer;
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/chunkMp3File.ts:
+
+import ffmpeg, { FfprobeData } from "fluent-ffmpeg";
+import fs from "fs/promises";
+import path from "path";
+
+ffmpeg.setFfmpegPath("/usr/bin/ffmpeg");
+
+/**
+ * Chunks an MP3 file if its size exceeds 20 MB and disregards any chunks that are less than 180 KB.
+ *
+ * @param {string} mp3FilePath - The path to the MP3 file to be chunked.
+ * @returns {Promise<string[]>} An array of paths corresponding to the chunked files or the
+ * original file if its size is under 20 MB.
+ * @example
+ * ```
+ * // If the original file is "input.mp3" and it's chunked into 3 parts, the output might look like:
+ * ["input_chunk001.mp3", "input_chunk002.mp3", "input_chunk003.mp3"]
+ * ```
+ */
+const chunkMp3File = async(mp3FilePath: string): Promise<string[]> => {
+  const fullFileName = path.basename(mp3FilePath);
+  const [ fileName ] = fullFileName.split(".");
+  const outputChunkPaths: string[] = [];
+  const outputDir = path.dirname(mp3FilePath);
+
+  // Retrieve file data using ffprobe and fs
+  const stats = await fs.stat(mp3FilePath);
+  const fileSizeInMB = stats.size / (1024 * 1024);
+  const fileData: FfprobeData = await new Promise((resolve, reject) => {
+    // eslint-disable-next-line no-confusing-arrow
+    ffmpeg.ffprobe(mp3FilePath, (err, data) => err ? reject(err) : resolve(data));
+  });
+
+  const { duration: fileDuration = 0, format_name: inputFormat = "" } =
+    fileData.format ?? {};
+
+  // If file size is less than or equal to 20 MB, do not chunk
+  if (fileSizeInMB <= 20){
+    outputChunkPaths.push(mp3FilePath);
+  } else {
+    const targetChunkSizeInBytes = 20 * 1024 * 1024;
+    const targetChunkDurationInSeconds =
+      targetChunkSizeInBytes / stats.size * fileDuration;
+
+    // Create chunks using ffmpeg
+    await new Promise<void>((resolve, reject) => {
+      ffmpeg(mp3FilePath)
+        .inputFormat(inputFormat)
+        .format("mp3")
+        .outputOptions(
+          "-map",
+          "0",
+          "-segment_time",
+          targetChunkDurationInSeconds.toString(),
+          "-f",
+          "segment"
+        )
+        .on("error", err => reject(err))
+        .on("end", () => resolve())
+        .saveToFile(path.join(outputDir, `${fileName}_chunk%03d.mp3`));
+    });
+
+    // Filters output directory for chunked files
+    const outputFiles = await fs.readdir(outputDir);
+    const chunkFiles = outputFiles.filter(file => file.startsWith(`${fileName}_chunk`));
+
+    /* Saves file paths of chunked files that are greater than or equal to 180 KB but smaller than 20 MB into an
+         array to be returned */
+    // eslint-disable-next-line arrow-parens
+    await Promise.all(chunkFiles.map(async(file) => {
+      const filePath = path.join(outputDir, file);
+      const fileStats = await fs.stat(filePath);
+      if (fileStats.size >= 180 * 1024){
+        outputChunkPaths.push(filePath);
+      } else {
+        await fs.unlink(filePath);
+      }
+    }));
+  }
+
+  return outputChunkPaths;
+};
+
+export default chunkMp3File;
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/chunkTxtFile.ts:
+
+import { MODEL } from "@/constants";
+import countTokens from "@/lib/countTokens";
+import { promises as fsPromises, createReadStream } from "fs";
+import { parse, join, dirname } from "path";
+import { createInterface } from "readline";
+
+const chunkTxtFile = async(txtFilePath: string, prompts: string[]): Promise<string[]> => {
+  const { name: fileName } = parse(txtFilePath);
+  console.log(`File Name: ${fileName}`);
+
+  const outputDir = dirname(txtFilePath);
+  console.log(`Output Directory: ${outputDir}`);
+
+  const promptTokens = countTokens(prompts);
+  console.log(`Prompt Tokens: ${promptTokens}`);
+
+  const fileTokens = countTokens(await fsPromises.readFile(txtFilePath, "utf8"));
+  console.log(`File Size in Tokens: ${fileTokens}`);
+
+  const totalTokens = promptTokens + fileTokens;
+  console.log(`Total Tokens: ${totalTokens}`);
+
+  if (MODEL.tokenLimit >= totalTokens){
+    console.log("File size is within the token limit");
+    return [ txtFilePath ];
+  }
+
+  // This is to be able to read the file line by line
+  const fileStream = createReadStream(txtFilePath, { encoding: "utf8" });
+  const readStream = createInterface({ input: fileStream });
+
+  let chunk = "";
+  let chunkTokens = 0;
+  let chunkIndex = 1;
+  const outputChunkPaths: string[] = [];
+
+  for await (const line of readStream){
+    const lineTokens = countTokens(line);
+    console.log(`Line Tokens: ${lineTokens}`);
+
+    if (chunkTokens + lineTokens > MODEL.tokenLimit){
+      if (chunk){
+        const chunkPath = join(outputDir, `${fileName}_chunk${String(chunkIndex).padStart(3, "0")}.txt`);
+        console.log(`Writing chunk to: ${chunkPath}`);
+        await fsPromises.writeFile(chunkPath, chunk);
+        outputChunkPaths.push(chunkPath);
+      }
+
+      chunk = "";
+      chunkTokens = 0;
+      chunkIndex++;
+    }
+
+    if (lineTokens > MODEL.tokenLimit){
+      // Split the line into smaller chunks
+      const lineChunks = chunkString(line, MODEL.tokenLimit);
+      for (const lineChunk of lineChunks){
+        if (chunkTokens + countTokens(lineChunk) > MODEL.tokenLimit){
+          const chunkPath = join(outputDir, `${fileName}_chunk${String(chunkIndex).padStart(3, "0")}.txt`);
+          console.log(`Writing chunk to: ${chunkPath}`);
+          await fsPromises.writeFile(chunkPath, chunk);
+          outputChunkPaths.push(chunkPath);
+
+          chunk = "";
+          chunkTokens = 0;
+          chunkIndex++;
+        }
+
+        chunk += `${lineChunk}\n`;
+        chunkTokens += countTokens(lineChunk);
+        console.log(`Current Chunk Tokens: ${chunkTokens}`);
+      }
+    } else {
+      if (chunkTokens + lineTokens > MODEL.tokenLimit){
+        const chunkPath = join(outputDir, `${fileName}_chunk${String(chunkIndex).padStart(3, "0")}.txt`);
+        console.log(`Writing chunk to: ${chunkPath}`);
+        await fsPromises.writeFile(chunkPath, chunk);
+        outputChunkPaths.push(chunkPath);
+
+        chunk = "";
+        chunkTokens = 0;
+        chunkIndex++;
+      }
+
+      chunk += `${line}\n`;
+      chunkTokens += lineTokens;
+      console.log(`Current Chunk Tokens: ${chunkTokens}`);
+    }
+  }
+
+  if (chunk){
+    const chunkPath = join(outputDir, `${fileName}_chunk${String(chunkIndex).padStart(3, "0")}.txt`);
+    console.log(`Writing chunk to: ${chunkPath}`);
+    await fsPromises.writeFile(chunkPath, chunk);
+    outputChunkPaths.push(chunkPath);
+  }
+
+  return outputChunkPaths;
+};
+
+const chunkString = (str: string, size: number): string[] => {
+  const chunks = [];
+  let i = 0;
+  while (i < str.length){
+    chunks.push(str.substr(i, size));
+    i += size;
+  }
+  return chunks;
+};
+
+export default chunkTxtFile;
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/concatnateTxtFiles.ts:
+
+import { promises as fsPromises } from "fs";
+
+type ConcatenateFiles = (filePaths: string[], outputPath: string) => Promise<void>;
+
+/**
+ * Concatenates the content of multiple files into a single file.
+ *
+ * @param {string[]} filePaths - An array of file paths to concatenate.
+ * @param {string} outputPath - The path of the output file.
+ * @returns {Promise<void>} A promise that resolves when the operation is completed.
+ */
+const concatenateTxtFiles: ConcatenateFiles = async(filePaths, outputPath) => {
+  const data = await Promise.all(filePaths.map(filePath => fsPromises.readFile(filePath, "utf-8")));
+  const content = data.join(" ");
+  await fsPromises.writeFile(outputPath, content, "utf8");
+};
+
+export default concatenateTxtFiles;
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/convertToMp3.ts:
+
+import ffmpeg from "fluent-ffmpeg";
+import path from "path";
+
+ffmpeg.setFfmpegPath("/usr/bin/ffmpeg");
+
+/**
+ * Converts a media file to an MP3 file using ffmpeg.
+ *
+ * @param {string} inputFilePath - The path of the input file.
+ * @returns {Promise<string>} A promise that resolves with the output file path of the converted file.
+ * @example
+ * ```
+ * // If the input file is "input.wav", the output might look like:
+ * "input.mp3"
+ * ```
+ */
+const convertToMp3 = (inputFilePath: string): Promise<string> => {
+  const [ fileName, inputFileType ] = path.basename(inputFilePath).split(".");
+  const outputFilePath = path.join(path.dirname(inputFilePath), `${fileName}.mp3`);
+
+  if (inputFileType === "mp3") return Promise.resolve(inputFilePath);
+
+  return new Promise((resolve, reject) => {
+    ffmpeg(inputFilePath)
+      .inputFormat(inputFileType)
+      .format("mp3")
+      .audioCodec("libmp3lame")
+      .on("error", err => {
+        reject(err);
+      })
+      .on("end", () => {
+        resolve(outputFilePath);
+      })
+      .save(outputFilePath);
+  });
+};
+
+export default convertToMp3;
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/countTokens.ts:
+
+import { get_encoding } from "@dqbd/tiktoken";
+
+/**
+ * Counts the number of tokens in a text or an array of texts.
+ *
+ * @param {string | string[]} texts - The text or an array of texts to count tokens in.
+ * @returns {number} The number of tokens.
+ */
+const countTokens = (texts: string | string[]): number => {
+  const encoding = get_encoding("cl100k_base");
+
+  const calculateTokenCount = (text: string) => encoding.encode(text).length;
+
+  const tokenCount = Array.isArray(texts)
+    ? texts.reduce((total, text) => total + calculateTokenCount(text), 0)
+    : calculateTokenCount(texts);
+
+  encoding.free();
+
+  return tokenCount;
+};
+
+export default countTokens;
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/deleteFilesInDir.ts:
+
+import fs from "fs/promises";
+import path from "path";
+
+/**
+ * Deletes all files and subdirectories within the specified directory.
+ *
+ * @param {string} directoryPath - The path of the directory to delete files from.
+ * @returns {Promise<void>} A Promise that resolves when the operation is complete.
+ */
+const deleteFiles = async(directoryPath: string): Promise<void> => {
+  const files = await fs.readdir(directoryPath);
+  await Promise.all(files.map(async file => {
+    const filePath = path.join(directoryPath, file);
+    const stat = await fs.stat(filePath);
+    if (stat.isDirectory()){
+      await deleteFiles(filePath);
+    } else {
+      await fs.unlink(filePath);
+    }
+  }));
+};
+
+export default deleteFiles;
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/downloadFile.ts:
+
+/**
+ * Downloads a file with the given file name and content.
+ * @function
+ * @param {string} fileName - The name of the file to be downloaded.
+ * @param {string} content - The content of the file to be downloaded.
+ * @returns {void}
+ * @example
+ * downloadFile('file.txt', 'Hello world!');
+ * // Downloads a file named 'file.txt' with the content 'Hello world!'
+ */
+const downloadFile = (fileName: string, content: string) => {
+  const downloadLink = document.createElement("a");
+  downloadLink.href = URL.createObjectURL(new Blob([ content ], { type: "text/plain" }));
+  downloadLink.download = fileName;
+  downloadLink.style.display = "none";
+
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+  URL.revokeObjectURL(downloadLink.href);
+};
+
+export default downloadFile;
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/lib/extractSummaryData.ts:
+
+/* eslint-disable max-len */
+
+/**
+* Extracts and organizes data from an array of summaries into an object.
+* @param {string[]} rawSummaries - An array of summaries.
+* @returns {object} - An object containing the extracted summary data.
+*/
+const extractSummaryData = (rawSummaries: string[]) => {
+  const mainSectionRegex = /##\s\d+\.\s[A-Z\s]+/; // Matches text in this format: ## 1. AUDIENCE ANALYSIS
+
+  return rawSummaries.reduce((accumulator, rawSummary) => {
+    const lines = rawSummary.split("\n");
+
+    const findIndex = (keyword: string) => lines.findIndex(line => line.includes(keyword));
+
+    const findEndIndex = (keyword: string, nextKeywordIndex: number) => lines.findIndex((line, index) => index > findIndex(keyword) && (line.includes(lines[nextKeywordIndex]) || mainSectionRegex.test(line))) - 1;
+
+    const indices = {
+      intendedAudienceStart: findIndex("**Intended Audience:**"),
+      mainTopicsStart: findIndex("**Main Topics:**"),
+      criticalComponentsStart: findIndex("**Critical Components:**"),
+      procedureBreakdownStart: findIndex("**Procedure Breakdown:**"),
+      summaryStart: findIndex("**Summary:**"),
+      deepAnalysisStart: findIndex("**Deep Analysis:**")
+    };
+
+    const endIndices = {
+      intendedAudienceEnd: findEndIndex("**Intended Audience:**", indices.mainTopicsStart),
+      mainTopicsEnd: findEndIndex("**Main Topics:**", indices.criticalComponentsStart),
+      criticalComponentsEnd: findEndIndex("**Critical Components:**", indices.procedureBreakdownStart),
+      procedureBreakdownEnd: findEndIndex("**Procedure Breakdown:**", indices.summaryStart),
+      summaryEnd: findEndIndex("**Summary:**", indices.deepAnalysisStart),
+      deepAnalysisEnd: lines.findIndex((line, index) => index > indices.deepAnalysisStart && (line.includes("**Deep Analysis:**") || index === lines.length - 1)) - 1
+    };
+
+    if (endIndices.deepAnalysisEnd === -2){
+      endIndices.deepAnalysisEnd = lines.length - 1;
+    }
+
+    const extractSection = (start: number, end: number) => lines.slice(start, end + 1).join("\n");
+
+    accumulator.audienceAnalysis.intendedAudience += `${extractSection(indices.intendedAudienceStart, endIndices.intendedAudienceEnd)}\n`;
+    accumulator.contentAnalysis.mainTopics += `${extractSection(indices.mainTopicsStart, endIndices.mainTopicsEnd)}\n`;
+    accumulator.contentAnalysis.criticalComponents += `${extractSection(indices.criticalComponentsStart, endIndices.criticalComponentsEnd)}\n`;
+    accumulator.textDeconstruction.procedureBreakdown += `${extractSection(indices.procedureBreakdownStart, endIndices.procedureBreakdownEnd)}\n`;
+    accumulator.conclusion.summary += `${extractSection(indices.summaryStart, endIndices.summaryEnd)}\n`;
+    accumulator.inferredInnovation.deepAnalysis += `${extractSection(indices.deepAnalysisStart, endIndices.deepAnalysisEnd)}\n`;
+
+    return accumulator;
+  }, {
+    audienceAnalysis: {
+      intendedAudience: ""
+    },
+    contentAnalysis: {
+      mainTopics: "",
+      criticalComponents: ""
+    },
+    textDeconstruction: {
+      procedureBreakdown: ""
+    },
+    conclusion: {
+      summary: ""
+    },
+    inferredInnovation: {
+      deepAnalysis: ""
+    }
+  });
+};
+
+export default extractSummaryData;
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/next-env.d.ts:
+
+/// <reference types="next" />
+/// <reference types="next/image-types/global" />
+
+// NOTE: This file should not be edited
+// see https://nextjs.org/docs/basic-features/typescript for more information.
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/next.config.js:
+
+const webpack = require('webpack');
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  webpack: (config, { isServer }) => {
+    // Add the plugin to both the server and client configurations
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.FLUENTFFMPEG_COV': false // patch for fluent-ffmpeg
+      })
+    );
+
+    // Enable polling-based file watching for hot reloading inside a Docker container
+    config.watchOptions = {
+      poll: 800,
+      aggregateTimeout: 300,
+    };
+
+    return config;
+  },
+  experimental: {
+    appDir: true,
+  },
+};
+
+module.exports = nextConfig;
+
+
+/c/Users/wesle/repos/audio-transcriptor/package.json:
+
+{
+  "name": "audio-transcriptor",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "set NODE_OPTIONS='--inspect' && next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "lint:fix:alt": "next lint -- --fix",
+    "lint:fix:line-breaks": "find . -type f ! -path '*/node_modules/*' ! -path '*/uploads/*' -exec sed -i 's/\\r$//' {} +"
+  },
+  "dependencies": {
+    "@dqbd/tiktoken": "^1.0.7",
+    "fluent-ffmpeg": "^2.1.2",
+    "form-data": "^4.0.0",
+    "next": "13.3.0",
+    "node-fetch": "^3.3.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "dependencyDescriptions": {
+    "fluent-ffmpeg": "Wrapper around ffmpeg, for converting multimedia files.",
+    "form-data": "A module to create readable \"multipart/form-data\" streams. Can be used to submit forms and file uploads to other web applications.",
+    "next": "A React Framework",
+    "node-fetch": "A light-weight module that brings window.fetch to Node.js. Used to send form-data to the server.",
+    "react": "React is a JavaScript library for building user interfaces.",
+    "react-dom": "React package for working with the DOM."
+  },
+  "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.21",
+    "@types/node": "18.15.11",
+    "@types/react": "18.0.33",
+    "@types/react-dom": "18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "eslint": "^8.39.0",
+    "eslint-config-next": "13.3.0",
+    "eslint-plugin-import": "^2.27.5",
+    "typescript": "5.0.4"
+  },
+  "devDependencyDescriptions": {
+    "@types/fluent-ffmpeg": "Type definitions for fluent-ffmpeg.",
+    "@types/node": "Type definitions for Node.js.",
+    "@types/react": "Type definitions for React.",
+    "@types/react-dom": "Type definitions for React DOM.",
+    "@typescript-eslint/eslint-plugin": "TypeScript parser for ESLint.",
+    "eslint": "A fully pluggable tool for identifying and reporting on patterns in JavaScript.",
+    "eslint-config-next": "ESLint config for Next.js",
+    "eslint-plugin-import": "This plugin intends to support linting of ES2015+ (ES6+) import/export syntax, and prevent issues with misspelling of file paths and import names. Used to sort imports alphabetically.",
+    "typescript": "TypeScript is a language for application scale JavaScript development."
+  }
+}
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/README.md:
+
+# Audio Transcriptor and Text Summarizer
+
+This project provides an interface for transcribing audio files to text and summarizing blocks of text using AI. It is built using Next.js, React, TypeScript, and Docker.
+
+## Features
+
+- Upload an audio file and have it transcribed to text using automatic speech recognition
+- Upload a text file and have key points summarized using AI text summarization 
+- Download transcripts and summaries
+- Local dev environment using Docker for consistency across environments
+- Linting and formatting using ESLint
+
+## Audio Transcription
+
+The app allows uploading an audio file such as .wav, .mp3, .m4a, etc. The file is sent to the Next.js API route `/api/transcribe`. This route handles taking the uploaded file and sending it to a `transcribeAudio` function.
+
+`transcribeAudio` leverages [fluent-ffmpeg](https://www.npmjs.com/package/fluent-ffmpeg) to convert the audio file to a format required by the speech recognition API (currently [Whisper API](https://openai.com/research/whisper)). After converting the file, it sends it to the AssemblyAI API which handles transcribing the audio and returning the text.
+
+The text is returned back to the client where it can be displayed and downloaded.
+
+## Text Summarization
+
+The app allows uploading a text file such as a .txt file. The file is sent to the Next.js API route `/api/summarize`. This route handles taking the uploaded file content and sending it to the `generateSummary` function.
+
+`generateSummary` uses the [@dqbd/tiktoken](https://www.npmjs.com/package/@dqbd/tiktoken) library to count the tokens then calls OpenAI's GPT API to summarize the text. The text is formatted into a prompt that instructs the AI to summarize the content and break it into sections like Summary, Key Points, etc.
+
+The formatted summary text is returned back to the client where it can be displayed and downloaded.
+
+The prompts are defined in `constants/index.ts`. This allows prompts to be tweaked and iterated on over time.
+
+## Local Development Environment
+
+The project includes configurations for running the Next.js app and API server locally in a Docker container. 
+
+This provides parity between the local dev environment and production. The Dockerfile defines the environment including installing dependencies, while docker-compose specifies running the Next.js app and API server.
+
+To use the local dev environment:
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+2. Clone the repo
+3. Open the repo in [VSCode](https://code.visualstudio.com/)
+4. Install the [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
+5. Reopen the project in a Container when prompted or run the command "Remote-Containers: Reopen in Container"
+
+This will start the Next.js app and API server in Docker. The app will reload on changes.
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) - Framework for server-rendered React apps 
+- [React](https://reactjs.org/) - Library for building user interfaces
+- [TypeScript](https://www.typescriptlang.org/) - Typed superset of JavaScript
+- [Docker](https://www.docker.com/) - Containerization technology 
+- [fluent-ffmpeg](https://www.npmjs.com/package/fluent-ffmpeg) - Audio/video converter
+- [Whisper API](https://openai.com/research/whisper) - Speech recognition API
+- [OpenAI GPT API](https://platform.openai.com/docs/api-reference) - API for the LLM used for summarization
+- [@dqbd/tiktoken](https://www.npmjs.com/package/@dqbd/tiktoken) - Token counting library compatible with OpenAI 
+- [ESLint](https://eslint.org/) - Linter
+- [Vercel](https://vercel.com/) - Deployment platform
+
+## Contributing
+
+Contributions are welcome! Please open an issue or create a pull request.
+
+Some ideas for contributions:
+
+- Support additional audio formats for transcription
+- Try different speech recognition APIs 
+- Experiment with improving prompts for the AI summarizer
+- Add tests
+- Improve documentation
+- Fix bugs
+
+## License
+
+This project is licensed under the MIT license. See [LICENSE.md](LICENSE.md) for more information.
+
+
+
+/c/Users/wesle/repos/audio-transcriptor/tsconfig.json:
+
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

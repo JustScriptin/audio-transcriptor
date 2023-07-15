@@ -3,14 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "set NODE_OPTIONS='--inspect' && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "lint:fix:alt": "next lint -- --fix"
+    "lint:fix:alt": "next lint -- --fix",
+    "lint:fix:line-breaks": "find . -type f ! -path '*/node_modules/*' ! -path '*/uploads/*' -exec sed -i 's/\\r$//' {} +"
   },
   "dependencies": {
+    "@dqbd/tiktoken": "^1.0.7",
     "fluent-ffmpeg": "^2.1.2",
     "form-data": "^4.0.0",
     "next": "13.3.0",

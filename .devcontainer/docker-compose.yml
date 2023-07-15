@@ -8,10 +8,13 @@ services:
       - "3000:3000"
     volumes:
     # Files and Directories We Want Hot Reloaded
-      - ../app:/workspace/app
+      - ../app:/workspace/app:cached
       - ../public:/workspace/public
       - ../components:/workspace/components
       - ../lib:/workspace/lib
+      - ../.next:/workspace/.next
+      #- /workspace/node_modules
+
     # Dev Experience - Persist VSCode Extensions and History (Windows)
       - ~/.vscode/extensions:/root/.vscode-server/extensions
     tty: true

@@ -1,37 +1,74 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Audio Transcriptor and Text Summarizer
+
+## Overview
+
+This project provides an interface for transcribing audio files to text and summarizing blocks of text using AI. The app allows you to easily:
+
+- Upload an audio file or mp4 and have it transcribed to text using automatic speech recognition
+- Upload a text file and have key points summarized using AI text summarization
+- Download transcripts and summaries for review and use  
+
+The project demonstrates using Next.js, React, TypeScript, and Docker to build a full-stack web application with a great developer experience.
+
+### Key Features
+
+- **Audio Transcription** - Upload common audio formats and mp4 like .wav, .mp3, etc and leverage AI to convert speech to text 
+- **Text Summarization** - Upload text files and summarize the key points using AI 
+- **Download Files** - Get transcriptions and summaries as text files to use however needed
+- **Local Dev Environment** - Containerized dev environment using Docker ensures consistency across local and production
+- **Code Formatting** - ESLint handles code linting and formatting for clean, consistent code
+
+### Tech Stack
+
+- **[Next.js](https://nextjs.org/)** - React framework for server-rendered apps
+- **[React](https://reactjs.org/)** - Library for building user interfaces  
+- **[TypeScript](https://www.typescriptlang.org/)** - Static typing for JavaScript
+- **[Docker](https://www.docker.com/)** - Containerization for consistent environments
+- **[ESLint](https://eslint.org/)** - Linter for clean code
+- **[Vercel](https://vercel.com/)** - Deployment platform
+- **[fluent-ffmpeg](https://www.npmjs.com/package/fluent-ffmpeg)** - Audio/video file conversion
+- **[OpenAI Whisper](https://openai.com/blog/whisper/)** - Speech recognition API
+- **[OpenAI GPT-3](https://platform.openai.com/)** - Large language model API for summarization 
+- **[@dqbd/tiktoken](https://www.npmjs.com/package/@dqbd/tiktoken)** - Token counter for GPT-3
+
+## File Structure
+
+- **`pages/api`** - API routes for transcribing and summarizing
+- **`components`** - Reusable React components like the file uploader
+- **`lib`** - Helper and shared utility functions 
+- **`constants`** - Constants for API keys, prompts, etc
 
 ## Getting Started
 
-First, run the development server:
+### Run Locally with Docker
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+1. Clone the repository
+2. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+3. Open the repo in [VS Code](https://code.visualstudio.com/)
+4. Install the [Remote Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
+5. Start Docker Desktop
+6. Reopen the project in a Container when prompted or run the command after pressing `f1` "Remote-Containers: Reopen in Container" or "Dev Container: Reopen in container" if the former doesn't show up
+7. Docker will start the Next.js app and API server - Changes will hot reload
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Local Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `npm run dev` - Start the Next.js dev server
+- `npm run build` - Create a production build
+- `npm run start` - Start the Node.js server
+- `npm run lint` - Lint code with ESLint
+- `npm run lint:fix` - Run ESLint with auto-fixing
 
-## Running Dev Environment with Docker
+### Contributions
 
-### Prerequisites
+Contributions are welcome! Please open an issue or create a pull request. Some ideas:
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop) installed and running.
-- [Visual Studio Code](https://code.visualstudio.com/) installed.
-- [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension installed in Visual Studio Code.
+- Support more audio formats for transcription  
+- Try different speech recognition APIs
+- Improve prompts for the AI summarizer 
+- Add tests
+- Improve documentation
+- Fix bugs
 
-### Steps
+### License
 
-0. Start Docker Desktop.
-1. Open the project folder in Visual Studio Code.
-2. Press `F1` to open the command palette and type "Remote-Containers: Reopen in Container" to open the project in the development container. Visual Studio Code will build the Docker image based on the Dockerfile and start the container.
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project is licensed under the MIT license - see [LICENSE.md](LICENSE.md) for details.

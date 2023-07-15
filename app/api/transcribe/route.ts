@@ -37,11 +37,12 @@ export const POST = async(req: Request): Promise<Response> => {
 
   const results: { fileName: string; transcription?: string }[] = [];
 
+  // Map over each file and create a promise for each file to be transcribed. This is to manage multiple files.
   await Promise.all(files.map(async(file: File) => {
     const [ fileName ] = file.name.split(".");
     const inputFilePath = path.join(baseDir, file.name);
 
-    // Write the file to disk
+    // Write the file to disk. fs needs it as a buffer, so we convert it.
     const buffer = Buffer.from(await file.arrayBuffer());
     fs.writeFileSync(inputFilePath, buffer);
 

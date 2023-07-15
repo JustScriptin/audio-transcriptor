@@ -6,7 +6,7 @@
   "plugins": ["@typescript-eslint", "import"],
   "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "eslint:recommended"],
   "rules": {
-    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "^_" }],
     "no-unused-vars": "off",
     "import/order": [
       "error",
@@ -50,7 +50,7 @@
     "id-length": ["error", {
       "min": 3,
       "max": 40,
-      "exceptions": ["fs"]
+      "exceptions": ["fs", "_"]
     }],
       "max-depth": ["error", 4],
       "max-nested-callbacks": ["error", 4],
@@ -114,7 +114,7 @@
       "spaced-comment": "error",
       "yoda": "error",
       "array-bracket-spacing": ["error", "always"],
-      "array-element-newline": ["error", "never"],
+      "array-element-newline": ["error", "consistent"],
       "arrow-parens": ["error", "as-needed"],
       "arrow-spacing": "error",
       "block-spacing": "error",

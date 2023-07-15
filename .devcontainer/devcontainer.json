@@ -1,16 +1,20 @@
-{
+  {
     "name": "Windows 11 FFmpeg Dev Env",
     "dockerComposeFile": "docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/workspace",
     "postStartCommand": "npm run dev",
     "shutdownAction": "stopCompose",
-    "settings": {
-      "terminal.integrated.defaultProfile.linux": "bash (container default)",
-      "terminal.integrated.profiles.linux": {
-        "bash (container default)": {
-          "path": "/usr/bin/bash",
-          "overrideName": true
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "terminal.integrated.defaultProfile.linux": "bash (container default)",
+          "terminal.integrated.profiles.linux": {
+            "bash (container default)": {
+              "path": "/usr/bin/bash",
+              "overrideName": true
+            }
+          }
         }
       }
     }
