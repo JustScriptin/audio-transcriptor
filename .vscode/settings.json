@@ -2,7 +2,7 @@
   "typescript.tsdk": "node_modules\\typescript\\lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "files.eol": "\r\n",
-  "files.exclude": {
-    "**/.next": true 
-  }
+  // "files.exclude": {
+  //   "**/.next": true 
+  // }
 }

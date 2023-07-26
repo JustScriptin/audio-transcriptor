@@ -12,7 +12,7 @@ services:
       - ../public:/workspace/public
       - ../components:/workspace/components
       - ../lib:/workspace/lib
-      - ../.next:/workspace/.next
+      #- ../.next:/workspace/.next
       #- /workspace/node_modules
 
     # Dev Experience - Persist VSCode Extensions and History (Windows)

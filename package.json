@@ -15,10 +15,13 @@
     "@dqbd/tiktoken": "^1.0.7",
     "fluent-ffmpeg": "^2.1.2",
     "form-data": "^4.0.0",
-    "next": "13.3.0",
+    "next": "^13.4.12",
     "node-fetch": "^3.3.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-dropzone": "^14.2.3",
+    "recoil": "^0.7.7",
+    "uuid": "^9.0.0"
   },
   "dependencyDescriptions": {
     "fluent-ffmpeg": "Wrapper around ffmpeg, for converting multimedia files.",
@@ -26,7 +29,10 @@
     "next": "A React Framework",
     "node-fetch": "A light-weight module that brings window.fetch to Node.js. Used to send form-data to the server.",
     "react": "React is a JavaScript library for building user interfaces.",
-    "react-dom": "React package for working with the DOM."
+    "react-dom": "React package for working with the DOM.",
+    "react-dropzone": "Simple HTML5 drag-drop zone with React.js. Used to create a drag and drop file upload component.",
+    "recoil": "Recoil is an state management library for React apps.",
+    "uuid": "Simple, fast generation of RFC4122 UUIDS."
   },
   "devDependencies": {
     "@types/fluent-ffmpeg": "^2.1.21",
@@ -37,6 +43,7 @@
     "eslint": "^8.39.0",
     "eslint-config-next": "13.3.0",
     "eslint-plugin-import": "^2.27.5",
+    "sass": "^1.63.6",
     "typescript": "5.0.4"
   },
   "devDependencyDescriptions": {

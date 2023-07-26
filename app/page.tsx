@@ -1,15 +1,15 @@
 "use client";
 
-import FilePicker from "@/components/FilePicker";
 import { NextPage } from "next";
-import "./page.module.scss"
+import { RecoilRoot } from "recoil";
+import HomePage from "./HomePage";
+
 
 const Home: NextPage = () => {
-
   return (
-    <>
-      <FilePicker />
-    </>
+    <RecoilRoot>
+      <HomePage />
+    </RecoilRoot>
   );
 };
 

@@ -81,7 +81,8 @@
 
 html,
 body {
-  max-width: 100vw;
+  height: 100vh;
+  width: 100vw;
   overflow-x: hidden;
 }
 
@@ -103,5 +104,43 @@ a {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+}
+
+.button {
+  display: inline-block;
+  background-color: red;
+  background-color: #007bff;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 1rem;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  &[disabled] {
+    opacity: 0.65;
+    pointer-events: none;
+    background-color: dimgray;
+  }
+  &:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+  }
+  &:active {
+    background-color: #0062cc;
+    border-color: #005cbf;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   }
 }

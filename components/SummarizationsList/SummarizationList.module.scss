@@ -1,0 +1,25 @@
+.sidebar {
+    grid-area: sidebar;
+    background-color: #E7F0FD;
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: darken(#E7F0FD, 10%);
+    padding: 10px;
+    border-bottom: 1px solid darken(#E7F0FD, 30%);
+    &__name {
+        font-family: sans-serif;
+        font-size: 1rem;
+    }
+    &__delete {
+        background-color: #FF5555;
+        &:hover {
+            background-color: darken(#FF5555, 10%);
+        }
+    }
+}

@@ -18,26 +18,26 @@ const assembleSummary = (summaryData: SummaryData) => {
   } = summaryData;
 
   const template = `
-    # Text Analysis Template
+# Text Analysis Template
     
-    ## 1. AUDIENCE ANALYSIS
-    - **Intended Audience:** ${audienceAnalysis.intendedAudience}
+## 1. AUDIENCE ANALYSIS
+  - **Intended Audience:** ${ audienceAnalysis.intendedAudience }
 
-    ## 2. CONTENT ANALYSIS
-    - **Main Topics:** ${contentAnalysis.mainTopics}
-    - **Critical Components:** ${contentAnalysis.criticalComponents}
+## 2. CONTENT ANALYSIS
+  - **Main Topics:** ${ contentAnalysis.mainTopics }
+  - **Critical Components:** ${ contentAnalysis.criticalComponents }
     
-    ## 3. TEXT DECONSTRUCTION
-    - **Procedure Breakdown:** ${textDeconstruction.procedureBreakdown}
+## 3. TEXT DECONSTRUCTION
+  - **Procedure Breakdown:** ${ textDeconstruction.procedureBreakdown }
     
-    ## 4. CONCLUSION
-    - **Summary:** ${conclusion.summary}
+## 4. CONCLUSION
+  - **Summary:** ${ conclusion.summary }
     
-    ## 5. INFERRED INNOVATION
-    - **Deep Analysis:** ${inferredInnovation.deepAnalysis}
+## 5. INFERRED INNOVATION
+  - **Deep Analysis:** ${ inferredInnovation.deepAnalysis }
   `;
 
-  return template.trim();
+  return template;
 };
 
 export default assembleSummary;

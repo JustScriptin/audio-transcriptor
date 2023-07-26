@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 
+export type FetchStatus = "idle" | "error" | "loading" | "success"
+
 // OpenAI GPT Prompts
 export const USER_PROMPTS = {
   summarize: `You are a text analysis specialist. You provide information in the form of the following template:
