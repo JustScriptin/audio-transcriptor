@@ -12,7 +12,7 @@ The project demonstrates using Next.js, React, TypeScript, and Docker to build a
 
 ### Demo
 
-Watch the demo video [here](./Demo.mp4) to see the application in action!
+Watch the demo video [![Watch the demo](https://image.shutterstock.com/image-vector/play-button-icon-isolated-media-260nw-1155910950.jpg)](https://streamable.com/zee6qw) to see the application in action!
 
 ### Key Features
 
