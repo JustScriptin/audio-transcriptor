@@ -12,7 +12,7 @@ The project demonstrates using Next.js, React, TypeScript, and Docker to build a
 
 ### Demo
 
-Watch the demo video ```<div style="width:100%;height:0px;position:relative;padding-bottom:62.992%;"><iframe src="https://streamable.com/e/zee6qw?loop=0" frameborder="0" width="100%" height="100%" allowfullscreen style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"></iframe></div>``` to see the application in action!
+Watch the demo video [![Watch the video](https://cdn.pixabay.com/photo/2016/02/01/12/33/play-1173551_1280.png)](https://drive.google.com/file/d/1q3tsCNDQuaTm5qix8D1SYK2tgRssA8zP/view?usp=sharing) to see the application in action!
 
 ### Key Features
 
