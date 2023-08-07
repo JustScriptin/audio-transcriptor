@@ -10,6 +10,10 @@ This project provides an interface for transcribing audio files to text and summ
 
 The project demonstrates using Next.js, React, TypeScript, and Docker to build a full-stack web application with a great developer experience.
 
+### Demo
+
+Watch the demo video [here](./Demo.mp4) to see the application in action!
+
 ### Key Features
 
 - **Audio Transcription** - Upload common audio formats and mp4 like .wav, .mp3, etc and leverage AI to convert speech to text 
@@ -22,14 +26,30 @@ The project demonstrates using Next.js, React, TypeScript, and Docker to build a
 
 - **[Next.js](https://nextjs.org/)** - React framework for server-rendered apps
 - **[React](https://reactjs.org/)** - Library for building user interfaces  
+- **[React-DOM](https://reactjs.org/docs/react-dom.html)** - React package for working with the DOM
+- **[fluent-ffmpeg](https://www.npmjs.com/package/fluent-ffmpeg)** - Wrapper around ffmpeg, for converting multimedia files
+- **[form-data](https://www.npmjs.com/package/form-data)** - A module to create readable "multipart/form-data" streams. Can be used to submit forms and file uploads to other web applications
+- **[node-fetch](https://www.npmjs.com/package/node-fetch)** - A light-weight module that brings window.fetch to Node.js. Used to send form-data to the server
+- **[react-dropzone](https://www.npmjs.com/package/react-dropzone)** - Simple HTML5 drag-drop zone with React.js. Used to create a drag and drop file upload component
+- **[recoil](https://recoiljs.org/)** - Recoil is an state management library for React apps
+- **[uuid](https://www.npmjs.com/package/uuid)** - Simple, fast generation of RFC4122 UUIDS
 - **[TypeScript](https://www.typescriptlang.org/)** - Static typing for JavaScript
 - **[Docker](https://www.docker.com/)** - Containerization for consistent environments
 - **[ESLint](https://eslint.org/)** - Linter for clean code
 - **[Vercel](https://vercel.com/)** - Deployment platform
-- **[fluent-ffmpeg](https://www.npmjs.com/package/fluent-ffmpeg)** - Audio/video file conversion
-- **[OpenAI Whisper](https://openai.com/blog/whisper/)** - Speech recognition API
-- **[OpenAI GPT-3](https://platform.openai.com/)** - Large language model API for summarization 
-- **[@dqbd/tiktoken](https://www.npmjs.com/package/@dqbd/tiktoken)** - Token counter for GPT-3
+
+### Dev Dependencies
+
+- **[@types/fluent-ffmpeg](https://www.npmjs.com/package/@types/fluent-ffmpeg)** - Type definitions for fluent-ffmpeg
+- **[@types/node](https://www.npmjs.com/package/@types/node)** - Type definitions for Node.js
+- **[@types/react](https://www.npmjs.com/package/@types/react)** - Type definitions for React
+- **[@types/react-dom](https://www.npmjs.com/package/@types/react-dom)** - Type definitions for React DOM
+- **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin)** - TypeScript parser for ESLint
+- **[eslint](https://eslint.org/)** - A fully pluggable tool for identifying and reporting on patterns in JavaScript
+- **[eslint-config-next](https://www.npmjs.com/package/eslint-config-next)** - ESLint config for Next.js
+- **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import)** - This plugin intends to support linting of ES2015+ (ES6+) import/export syntax, and prevent issues with misspelling of file paths and import names. Used to sort imports alphabetically
+- **[sass](https://sass-lang.com/)** - Professional-grade CSS extension language
+- **[TypeScript](https://www.typescriptlang.org/)** - TypeScript is a language for application scale JavaScript development
 
 ## File Structure
 
