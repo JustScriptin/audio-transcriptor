@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "lint:fix",
+			"problemMatcher": [
+				"$eslint-compact"
+			],
+			"label": "npm: lint:fix",
+			"detail": "next lint --fix"
+		}
+	]
+}

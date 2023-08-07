@@ -32,8 +32,8 @@ const FileUploadButton: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const updateSummarizationState = useUpdateSummarizationState();
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
+    const { files } = event.target;
+    if (files){
       updateSummarizationState(Array.from(files));
     }
   };

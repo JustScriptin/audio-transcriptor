@@ -21,20 +21,20 @@ const assembleSummary = (summaryData: SummaryData) => {
 # Text Analysis Template
     
 ## 1. AUDIENCE ANALYSIS
-  - **Intended Audience:** ${ audienceAnalysis.intendedAudience }
+  - **Intended Audience:** ${audienceAnalysis.intendedAudience}
 
 ## 2. CONTENT ANALYSIS
-  - **Main Topics:** ${ contentAnalysis.mainTopics }
-  - **Critical Components:** ${ contentAnalysis.criticalComponents }
+  - **Main Topics:** ${contentAnalysis.mainTopics}
+  - **Critical Components:** ${contentAnalysis.criticalComponents}
     
 ## 3. TEXT DECONSTRUCTION
-  - **Procedure Breakdown:** ${ textDeconstruction.procedureBreakdown }
+  - **Procedure Breakdown:** ${textDeconstruction.procedureBreakdown}
     
 ## 4. CONCLUSION
-  - **Summary:** ${ conclusion.summary }
+  - **Summary:** ${conclusion.summary}
     
 ## 5. INFERRED INNOVATION
-  - **Deep Analysis:** ${ inferredInnovation.deepAnalysis }
+  - **Deep Analysis:** ${inferredInnovation.deepAnalysis}
   `;
 
   return template;

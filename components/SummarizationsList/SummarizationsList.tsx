@@ -14,7 +14,7 @@ interface SummarizationProps {
 const Summarization: React.FC<SummarizationProps> = ({
   summarization,
   summarizationName,
-  summarizationStatus,
+  summarizationStatus
 }) => {
   const setSummarizations = useSetRecoilState(summarizationsAtom);
   const setSelectedSummarizationId = useSetRecoilState(selectedSummarizationIdAtom);
@@ -43,7 +43,6 @@ const Summarization: React.FC<SummarizationProps> = ({
 
 const SummarizationsList = () => {
   const summarizations = useRecoilValue(summarizationsAtom);
-  console.log(summarizations);
   return (
     <div className={styles.sidebar}>
       {summarizations.map(summarization => <Summarization

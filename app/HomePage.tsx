@@ -11,8 +11,8 @@ import styles from "./page.module.scss";
 
 const FileUploadDropzone = () => {
   const updateSummarizationState = useUpdateSummarizationState();
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    updateSummarizationState(acceptedFiles);
+  const onDrop = useCallback(async(acceptedFiles: File[]) => {
+    await updateSummarizationState(acceptedFiles);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, noClick: true });

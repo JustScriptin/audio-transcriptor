@@ -12,9 +12,7 @@ services:
       - ../public:/workspace/public
       - ../components:/workspace/components
       - ../lib:/workspace/lib
-      #- ../.next:/workspace/.next
-      #- /workspace/node_modules
 
     # Dev Experience - Persist VSCode Extensions and History (Windows)
-      - ~/.vscode/extensions:/root/.vscode-server/extensions
+      - ~/.vscode-insiders/extensions:/root/.vscode-server/extensions
     tty: true

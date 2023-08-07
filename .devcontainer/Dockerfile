@@ -18,11 +18,10 @@ COPY .dockerignore .dockerignore
 COPY .eslintrc.json .eslintrc.json
 COPY .gitignore .gitignore
 COPY .vscode .vscode
-COPY ./.next ./.next
+# COPY ./.next ./.next
 COPY .devcontainer .devcontainer
 COPY next-env.d.ts next-env.d.ts
 COPY README.md README.md
-COPY .git .git
 COPY docker-reset.sh docker-reset.sh
 COPY ./constants ./constants
 

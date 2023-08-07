@@ -58,7 +58,7 @@ const mockSummarizationsData: SummarizationsData[] = [
     name: "Example 2",
     status: "success",
     id: "2"
-  },
+  }
 ];
 
 const SUMMARIZATIONS_ATOM_KEY = "summarizationsAtomKey";
